@@ -85,8 +85,9 @@ spec:
               // sh "kubectl -n blue-green patch svc demo-blue-svc -p '{\"spec\":{\"selector\":{\"app\":\"demo-green\"}}}'"
               // 用 sed 替换 selector 中的 app 名
               sh """
+                cat svc-prod.yaml
                 sed -i 's/app: demo-blue/app: demo-green/' svc-prod.yaml
-                kubectl apply -f svc-prod.yaml -n blue-green
+                cat svc-prod.yaml
               """
             } else {
               echo "Skipping switch traffic"

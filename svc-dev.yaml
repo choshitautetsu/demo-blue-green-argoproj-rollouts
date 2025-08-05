@@ -9,8 +9,8 @@ metadata:
 spec:
   type: LoadBalancer
   ports:
-    - port: 3010 # 负载均衡器监听的端口
-      targetPort: 8080 # Pod容器实际监听的端口
+    - port: 3010
+      targetPort: 8080
       name: http
   selector:
     app: demo-green
