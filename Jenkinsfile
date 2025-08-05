@@ -82,7 +82,12 @@ spec:
         container('kubectl') {
           script {
             if (params.choices == 'switch traffic') {
-              sh "kubectl -n blue-green patch svc demo-blue-svc -p '{\"spec\":{\"selector\":{\"app\":\"demo-green\"}}}'"
+              // sh "kubectl -n blue-green patch svc demo-blue-svc -p '{\"spec\":{\"selector\":{\"app\":\"demo-green\"}}}'"
+              // 用 sed 替换 selector 中的 app 名
+              sh """
+                sed -i 's/app: demo-blue/app: demo-green/' svc-prod.yaml
+                kubectl apply -f svc-prod.yaml -n blue-green
+              """
             } else {
               echo "Skipping switch traffic"
             }
@@ -96,7 +101,13 @@ spec:
         container('kubectl') {
           script {
             if (params.choices == 'rollout blue') {
-              sh "kubectl -n blue-green patch svc demo-blue-svc -p '{\"spec\":{\"selector\":{\"app\":\"demo-blue\"}}}'"
+              // sh "kubectl -n blue-green patch svc demo-blue-svc -p '{\"spec\":{\"selector\":{\"app\":\"demo-blue\"}}}'"
+              // 用 sed 替换 selector 中的 app 名
+              sh """
+                cat svc-prod.yaml
+                sed -i 's/app: demo-green/app: demo-blue/' svc-prod.yaml
+                cat svc-prod.yaml
+              """
             } else {
               echo "Skipping rollout blue"
             }
