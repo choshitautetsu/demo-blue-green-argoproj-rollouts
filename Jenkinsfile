@@ -11,20 +11,21 @@ kind: Pod
 metadata:
   name: example-pod
 spec:
-  securityContext: # Pod级别securityContext
-    fsGroup: 1000 # 正确放置fsGroup
+  serviceAccountName: jenkins 
+  securityContext:                # Pod级别securityContext
+    fsGroup: 1000                # 正确放置fsGroup
     runAsUser: 1000
     runAsGroup: 1000
   containers:
-    - name: kubectl
-      image: bitnami/kubectl:1.27.4
-      command:
-        - sleep
-        - "3600"
-      tty: true
-      securityContext: # 容器级别securityContext
-        runAsUser: 1000
-        runAsGroup: 1000
+  - name: kubectl
+    image: bitnami/kubectl:1.27.4
+    command:
+    - sleep
+    - "3600"
+    tty: true
+    securityContext:             # 容器级别securityContext
+      runAsUser: 1000
+      runAsGroup: 1000
 """
     }
   }
