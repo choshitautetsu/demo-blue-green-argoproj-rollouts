@@ -94,7 +94,7 @@ spec:
                 
                 git commit -m "Switch traffic: update svc-prod.yaml selector from demo-blue to demo-green" || echo "No changes to commit"
                 
-                git push origin main
+                git push origin HEAD:main
               """
             } else {
               echo "Skipping switch traffic"
