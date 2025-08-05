@@ -104,7 +104,6 @@ spec:
       }
     }
 
-
     stage('Rollout Blue') {
       steps {
         container('kubectl') {
