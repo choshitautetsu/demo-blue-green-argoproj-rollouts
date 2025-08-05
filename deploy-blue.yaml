@@ -1,0 +1,21 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: demo-blue
+  namespace: blue-green
+spec:
+  replicas: 2
+  selector:
+    matchLabels:
+      app: demo-blue
+  template:
+    metadata:
+      labels:
+        app: demo-blue
+    spec:
+      containers:
+        - name: demo-blue
+          image: argoproj/rollouts-demo:blue
+          imagePullPolicy: IfNotPresent
+          ports:
+            - containerPort: 8080
