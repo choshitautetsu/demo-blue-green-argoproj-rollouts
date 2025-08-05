@@ -82,20 +82,7 @@ spec:
         container('kubectl') {
           script {
             if (params.choices == 'switch traffic') {
-              sh """
-                cat svc-prod.yaml
-                sed -i 's/app: demo-blue/app: demo-green/' svc-prod.yaml
-                cat svc-prod.yaml
-                
-                git config user.email "jenkins@example.com"
-                git config user.name "Jenkins CI"
-                
-                git add svc-prod.yaml
-                
-                git commit -m "Switch traffic: update svc-prod.yaml selector from demo-blue to demo-green" || echo "No changes to commit"
-                
-                git push origin HEAD:main
-              """
+              sh "kubectl -n blue-green patch svc demo-blue-svc -p '{\"spec\":{\"selector\":{\"app\":\"demo-blue\"}}}'"
             } else {
               echo "Skipping switch traffic"
             }
@@ -109,13 +96,7 @@ spec:
         container('kubectl') {
           script {
             if (params.choices == 'rollout blue') {
-              // sh "kubectl -n blue-green patch svc demo-blue-svc -p '{\"spec\":{\"selector\":{\"app\":\"demo-blue\"}}}'"
-              // 用 sed 替换 selector 中的 app 名
-              sh """
-                cat svc-prod.yaml
-                sed -i 's/app: demo-green/app: demo-blue/' svc-prod.yaml
-                cat svc-prod.yaml
-              """
+              sh "kubectl -n blue-green patch svc demo-blue-svc -p '{\"spec\":{\"selector\":{\"app\":\"demo-blue\"}}}'"
             } else {
               echo "Skipping rollout blue"
             }
