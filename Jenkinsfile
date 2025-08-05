@@ -8,19 +8,23 @@ pipeline {
       yaml """
 apiVersion: v1
 kind: Pod
+metadata:
+  name: example-pod
 spec:
-  serviceAccountName: jenkins 
+  securityContext: # Pod级别securityContext
+    fsGroup: 1000 # 正确放置fsGroup
+    runAsUser: 1000
+    runAsGroup: 1000
   containers:
-  - name: kubectl
-    image: bitnami/kubectl:1.27.4
-    command:
-    - sleep
-    - "3600"
-    tty: true
-    securityContext:
-      runAsUser: 1000
-      runAsGroup: 1000
-      fsGroup: 1000
+    - name: kubectl
+      image: bitnami/kubectl:1.27.4
+      command:
+        - sleep
+        - "3600"
+      tty: true
+      securityContext: # 容器级别securityContext
+        runAsUser: 1000
+        runAsGroup: 1000
 """
     }
   }
@@ -28,7 +32,7 @@ spec:
   parameters {
     choice(
       name: 'choices', 
-      choices: ['deploy blue', 'deploy green', 'switch traffic', 'rollout blue'], 
+      choices: ['deploy blue', 'deploy green', 'switch traffic', 'rollout blue','delete all'], 
       description: 'pick one'
     )
   }
@@ -92,6 +96,20 @@ spec:
           script {
             if (params.choices == 'rollout blue') {
               sh "kubectl -n blue-green patch svc demo-blue-svc -p '{\"spec\":{\"selector\":{\"app\":\"demo-blue\"}}}'"
+            } else {
+              echo "Skipping rollout blue"
+            }
+          }
+        }
+      }
+    }
+
+      stage('delete all') {
+      steps {
+        container('kubectl') {
+          script {
+            if (params.choices == 'delete all') {
+              sh "kubectl delete -f ./"
             } else {
               echo "Skipping rollout blue"
             }
