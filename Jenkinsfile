@@ -109,7 +109,7 @@ spec:
         container('kubectl') {
           script {
             if (params.choices == 'delete all') {
-              sh "kubectl delete -f ./"
+              sh "kubectl -n blue-green delete -f ./"
             } else {
               echo "Skipping rollout blue"
             }
